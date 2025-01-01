@@ -98,7 +98,7 @@ internal unsafe class MyProfiler : CorProfilerCallback2
 <pre><samp>C:\ManagedCorProfiler\Samples\ModuleLoadsProfiler> <kbd>.\run.cmd</kbd>
 [... OMITTED ...]
 Loaded Module -> 0x7ffeac1b4000 C:\Users\dev\Source\Repos\runtime\artifacts\bin\coreclr\windows.x64.Debug\System.Private.CoreLib.dll
-Loaded Module -> 0x7ffeac702148 C:\ManagedCorProfiler\Samples\SampleApp\bin\Debug\net8.0\SampleApp.dll
+Loaded Module -> 0x7ffeac702148 C:\ManagedCorProfiler\Samples\SampleApp\bin\Debug\net9.0\SampleApp.dll
 Loaded Module -> 0x7ffeac703e40 C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.0\system.runtime.dll
 Loaded Module -> 0x7ffeac8f9798 C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.0\system.console.dll
 Loaded Module -> 0x7ffeac8fc1f0 C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.0\system.threading.dll
@@ -122,7 +122,7 @@ C:\ManagedCorProfiler\Samples\ModuleLoadsProfiler> █</samp></pre>
 </picture>
 
 ## Dumpbin of the profiler DLL
-<pre><samp>C:\ManagedCorProfiler\Samples\ModuleLoadsProfiler> <kbd>dumpbin.exe /EXPORTS bin\Release\net8.0\publish\win-x64\ModuleLoadsProfiler.dll</kbd>
+<pre><samp>C:\ManagedCorProfiler\Samples\ModuleLoadsProfiler> <kbd>dumpbin.exe /EXPORTS bin\Release\net9.0\publish\win-x64\ModuleLoadsProfiler.dll</kbd>
 [...OMITTED FOR BREVITY...]
     ordinal hint RVA      name
           1    0 00232660 DllCanUnloadNow = DllCanUnloadNow
