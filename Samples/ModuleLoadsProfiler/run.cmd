@@ -9,4 +9,4 @@ set COMPlus_LogLevel=3
 set COMPlus_LogToConsole=1
 set CORE_LIBRARIES=C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.0
 
-corerun.exe "..\SampleApp\bin\Debug\net8.0\SampleApp.dll"
+dotnet "..\SampleApp\bin\Debug\net8.0\SampleApp.dll"
