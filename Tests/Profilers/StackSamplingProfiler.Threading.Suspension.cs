@@ -92,7 +92,7 @@ internal class StackSamplingProfiler_Threading_Suspension : TestProfilerBase
     {
         var hr = base.Initialize(unknown);
 
-        if (hr != HResult.S_OK)
+        if (hr != HRESULT.S_OK)
         {
             return hr;
         }
@@ -130,7 +130,7 @@ internal class StackSamplingProfiler_Threading_Suspension : TestProfilerBase
 
         var hr = ProfilerInfo->GetHandleFromThread(managedThreadId, &osThreadHandle);
 
-        if (hr != HResult.S_OK)
+        if (hr != HRESULT.S_OK)
         {
             Log.Warning("FAIL GetHandleFromThread() with hr=0x{hr:x8}", hr);
             return hr;

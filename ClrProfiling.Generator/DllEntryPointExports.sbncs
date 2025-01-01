@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Windows.Win32.Foundation;
 using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime.Utilities;
 using ClrProfiling.ComInterop.Wrappers;
@@ -23,7 +24,7 @@ namespace {{ profiler_namespace }}
         }
 
         [UnmanagedCallersOnly(EntryPoint = "DllGetClassObject")]
-        public static unsafe int DllGetClassObject(Guid* rclsid, Guid* riid, IntPtr* ppv)
+        public static unsafe int DllGetClassObject(Guid* rclsid, Guid* riid, nint* ppv)
         {
             var profGuid = *rclsid;
             var guid = *riid;
@@ -43,37 +44,37 @@ namespace {{ profiler_namespace }}
                 if (profilerInst == null)
                 {
                     Console.WriteLine($"No registered profiler for GUID: <{profGuid}>");
-                    *ppv = IntPtr.Zero;
-                     return HResult.E_NOINTERFACE;
+                    *ppv = nint.Zero;
+                     return HRESULT.E_NOINTERFACE;
                 }
 
                 var classFactory = new DefaultClassFactory(profilerInst);
 
-                IntPtr ccwUnknown = cw.GetOrCreateComInterfaceForObject(
+                nint ccwUnknown = cw.GetOrCreateComInterfaceForObject(
                     classFactory,
                     CreateComInterfaceFlags.None);
 
-                var hr = Marshal.QueryInterface(ccwUnknown, ref guid, out var ptr);
+                var hr = Marshal.QueryInterface(ccwUnknown, in guid, out var ptr);
 
                 Debug.Assert(hr == 0);
 
                 *ppv = ptr;
                 
-                return HResult.S_OK;
+                return HRESULT.S_OK;
             }
 
-            *ppv = IntPtr.Zero;
-            return HResult.E_NOINTERFACE;
+            *ppv = nint.Zero;
+            return HRESULT.E_NOINTERFACE;
         }
 
         [UnmanagedCallersOnly(EntryPoint = "DllCanUnloadNow")]
         public static unsafe int DllCanUnloadNow()
         {
-            return HResult.S_OK;
+            return HRESULT.S_OK;
         }
 
         [UnmanagedCallersOnly(EntryPoint = "DllMain")]
-        public static unsafe int DllMain(IntPtr hModule, int fwReason, IntPtr reserved)
+        public static unsafe int DllMain(nint hModule, int fwReason, nint reserved)
         {
             var reason = (DllMainCallReason)fwReason;
 

@@ -102,11 +102,11 @@ internal class StackSamplingProfiler_Threading_StackUnwind : TestProfilerBase
 
                 var hr = ProfilerInfo->GetFunctionFromIP3((byte*)frame, &functionId, &rejitId);
                 
-                if (hr != HResult.S_OK)
+                if (hr != HRESULT.S_OK)
                 {
                     Console.WriteLine($"0x{frame:x8} | ");
 
-                    if (hr != HResult.E_FAIL)
+                    if (hr != HRESULT.E_FAIL)
                     {
                         Console.Write($"FuncNameErr[{hr:x8}]");
                     }
@@ -116,11 +116,11 @@ internal class StackSamplingProfiler_Threading_StackUnwind : TestProfilerBase
 
                 hr = ProfilerInfoHelpers.GetFunctionIDName(ProfilerInfo2, functionId, out var functionName);
 
-                if (hr != HResult.S_OK)
+                if (hr != HRESULT.S_OK)
                 {
                     Console.WriteLine($"0x{frame:x8} | ");
 
-                    if (hr != HResult.E_FAIL)
+                    if (hr != HRESULT.E_FAIL)
                     {
                         Console.Write($"FuncNameErr[{hr:x8}]");
                     }

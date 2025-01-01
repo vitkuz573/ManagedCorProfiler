@@ -20,13 +20,7 @@ public readonly partial struct HRESULT : IEquatable<HRESULT>
     // mov      eax, 0xFFFFFFFF80004005
     // ret
     //
-    public static HRESULT S_OK => (HRESULT)0;
-
-    public static HRESULT S_FALSE => (HRESULT)1;
-
-    public static HRESULT E_FAIL => (HRESULT)unchecked((int)0x80004005);
-
-    public static HRESULT MakeHResult(uint severity, uint facility, uint errorNo)
+    public static HRESULT MakeHRESULT(uint severity, uint facility, uint errorNo)
     {
         uint result = severity << 31;
 
@@ -36,8 +30,8 @@ public readonly partial struct HRESULT : IEquatable<HRESULT>
         return new HRESULT(unchecked((int)result));
     }
 
-    public static HRESULT MakeClrErrorHResult(uint errorNo)
+    public static HRESULT MakeClrErrorHRESULT(uint errorNo)
     {
-        return MakeHResult(SEVERITY_ERROR, FACILITY_URT, errorNo);
+        return MakeHRESULT(SEVERITY_ERROR, FACILITY_URT, errorNo);
     }
 }

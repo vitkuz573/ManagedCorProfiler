@@ -8,14 +8,14 @@ namespace ClrProfiling.ComInterop.Wrappers
     public sealed unsafe class ClassFactoryComWrappers : ComWrappers
     {
         /* function pointers to be called by the native side */
-        static readonly IntPtr s_ClassFactoryCreateInstanceVtbl;
-        static readonly IntPtr s_ClassFactoryLockServersVtbl;
+        static readonly nint s_ClassFactoryCreateInstanceVtbl;
+        static readonly nint s_ClassFactoryLockServersVtbl;
 
         /* vtable definition */
         static readonly ComInterfaceEntry* s_ClassFactoryImplDefinition; // vtable pointer
         static readonly int s_ClassFactoryImplDefinitionLen; // num func pointers in the vtable
 
-        readonly delegate*<IntPtr, object?> _createIfSupported;
+        readonly delegate*<nint, object?> _createIfSupported;
 
         public ClassFactoryComWrappers(bool useDynamicNativeWrapper = false)
         {
@@ -34,9 +34,9 @@ namespace ClrProfiling.ComInterop.Wrappers
         {
             // Get system provided IUnknown implementation.
             GetIUnknownImpl(
-                out IntPtr fpQueryInterface,
-                out IntPtr fpAddRef,
-                out IntPtr fpRelease);
+                out nint fpQueryInterface,
+                out nint fpAddRef,
+                out nint fpRelease);
 
             // Construct VTable(s) for supported interface(s)
             {
@@ -44,9 +44,9 @@ namespace ClrProfiling.ComInterop.Wrappers
 
                 int idx = 0;
 
-                var vtable = (IntPtr*)RuntimeHelpers.AllocateTypeAssociatedMemory(
+                var vtable = (nint*)RuntimeHelpers.AllocateTypeAssociatedMemory(
                     typeof(ClassFactoryComWrappers),
-                    IntPtr.Size * tableCount);
+                    nint.Size * tableCount);
 
                 // IUnknown
                 vtable[idx++] = fpQueryInterface;
@@ -54,11 +54,11 @@ namespace ClrProfiling.ComInterop.Wrappers
                 vtable[idx++] = fpRelease;
 
                 // IClassFactory
-                vtable[idx++] = (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, Guid*, IntPtr*, int>)&IClassFactoryManagedWrapper.CreateInstance;
-                vtable[idx++] = (IntPtr)(delegate* unmanaged<IntPtr, bool, int>)&IClassFactoryManagedWrapper.LockServer;
+                vtable[idx++] = (nint)(delegate* unmanaged<nint, nint, Guid*, nint*, int>)&IClassFactoryManagedWrapper.CreateInstance;
+                vtable[idx++] = (nint)(delegate* unmanaged<nint, bool, int>)&IClassFactoryManagedWrapper.LockServer;
 
                 Debug.Assert(tableCount == idx);
-                s_ClassFactoryCreateInstanceVtbl = (IntPtr)vtable;
+                s_ClassFactoryCreateInstanceVtbl = (nint)vtable;
             }
 
             // Construct entries for supported managed types

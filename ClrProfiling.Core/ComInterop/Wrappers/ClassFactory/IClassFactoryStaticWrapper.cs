@@ -1,5 +1,6 @@
 ﻿using Microsoft.Diagnostics.Runtime.Utilities;
 using System.Runtime.InteropServices;
+using Windows.Win32.Foundation;
 
 namespace ClrProfiling.ComInterop.Wrappers
 {
@@ -7,15 +8,15 @@ namespace ClrProfiling.ComInterop.Wrappers
     {
         private bool _isDisposed = false;
 
-        public IntPtr IClassFactoryInst { get; init; }
+        public nint IClassFactoryInst { get; init; }
 
         private IClassFactoryStaticWrapper() { }
 
-        public static IClassFactoryStaticWrapper? CreateIfSupported(IntPtr ptr)
+        public static IClassFactoryStaticWrapper? CreateIfSupported(nint ptr)
         {
-            int hr = Marshal.QueryInterface(ptr, ref IClassFactory.IID_IClassFactory, out IntPtr instance);
+            int hr = Marshal.QueryInterface(ptr, in IClassFactory.IID_IClassFactory, out nint instance);
 
-            if (hr != HResult.S_OK)
+            if (hr != HRESULT.S_OK)
             {
                 return default;
             }

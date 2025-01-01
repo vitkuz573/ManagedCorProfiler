@@ -6,10 +6,10 @@ namespace ClrProfiling.Hooks
 {
     public static unsafe class EnterLeaveFunctionHooks3WithInfo
     {
-        private static IntPtr HooksLib;
-        private static IntPtr EnterNaked3WithInfo;
-        private static IntPtr LeaveNaked3WithInfo;
-        private static IntPtr TailcallNaked3WithInfo;
+        private static nint HooksLib;
+        private static nint EnterNaked3WithInfo;
+        private static nint LeaveNaked3WithInfo;
+        private static nint TailcallNaked3WithInfo;
         private static delegate*<EnterLeaveCallbacks3WithInfo*, void> SetCallbacks3WithInfo;
         private static EnterLeaveCallbacks3WithInfo* Callbacks3WithInfo;
 
@@ -21,11 +21,11 @@ namespace ClrProfiling.Hooks
             public delegate* unmanaged[Stdcall]<FunctionIDOrClientID, nuint, void> Tailcall;
         }
 
-        private static HRESULT TryGetProcAddress(string functionName, out IntPtr procAddr)
+        private static HRESULT TryGetProcAddress(string functionName, out nint procAddr)
         {
             procAddr = NativeMethods.GetProcAddress(HooksLib, functionName);
 
-            return procAddr == IntPtr.Zero ? HRESULT.E_FAIL : HRESULT.S_OK;
+            return procAddr == nint.Zero ? HRESULT.E_FAIL : HRESULT.S_OK;
         }
 
         public static HRESULT Initialize(string hooksLib = "hooks.dll")
@@ -38,7 +38,7 @@ namespace ClrProfiling.Hooks
 
             HooksLib = NativeMethods.LoadLibrary(hooksLib);
         
-            if (HooksLib == IntPtr.Zero) 
+            if (HooksLib == nint.Zero) 
             {
                 Console.WriteLine($"hooks lib failed to load: {hooksLib}.");
                 return HRESULT.E_FAIL;

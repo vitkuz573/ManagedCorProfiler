@@ -3,7 +3,6 @@ using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Windows.Win32;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Diagnostics.ClrProfiling;
 
@@ -17,9 +16,9 @@ namespace Windows.Win32
 
             // Get system provided IUnknown implementation.
             ComWrappers.GetIUnknownImpl(
-                out IntPtr fpQueryInterface,
-                out IntPtr fpAddRef,
-                out IntPtr fpRelease);
+                out nint fpQueryInterface,
+                out nint fpAddRef,
+                out nint fpRelease);
 
             // IUnknown
             vtable->QueryInterface_1 = (delegate* unmanaged[Stdcall]<IUnknown*, Guid*, void**, Foundation.HRESULT>)fpQueryInterface;
@@ -33,7 +32,7 @@ namespace ClrProfiling.ComInterop.Wrappers
 {
     internal unsafe class CorProfilerComWrappers : ComWrappers
     {
-        readonly delegate*<IntPtr, object?> _createIfSupported;
+        readonly delegate*<nint, object?> _createIfSupported;
 
         public CorProfilerComWrappers()
         {
@@ -44,74 +43,111 @@ namespace ClrProfiling.ComInterop.Wrappers
 
         private static nint GetICorProfilerCallbackVTable()
         {
-            return (nint)get_ICorProfilerCallbackVTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern ICorProfilerCallback.Vtbl* get_ICorProfilerCallbackVTable(IVTable<ICorProfilerCallback, ICorProfilerCallback.Vtbl> c);
+            return (nint)CreateICorProfilerCallbackVTable();
         }
 
         private static nint GetICorProfilerCallback2VTable()
         {
-            return (nint)get_ICorProfilerCallback2VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern ICorProfilerCallback2.Vtbl* get_ICorProfilerCallback2VTable(IVTable<ICorProfilerCallback2, ICorProfilerCallback2.Vtbl> c);
+            return (nint)CreateICorProfilerCallback2VTable();
         }
 
         private static nint GetICorProfilerCallback3VTable()
         {
-            return (nint)get_ICorProfilerCallback3VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback3VTable(IVTable<ICorProfilerCallback3, ICorProfilerCallback3.Vtbl> c);
+            return (nint)CreateICorProfilerCallback3VTable();
         }
 
         private static nint GetICorProfilerCallback4VTable()
         {
-            return (nint)get_ICorProfilerCallback4VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback4VTable(IVTable<ICorProfilerCallback4, ICorProfilerCallback4.Vtbl> c);
+            return (nint)CreateICorProfilerCallback4VTable();
         }
 
         private static nint GetICorProfilerCallback5VTable()
         {
-            return (nint)get_ICorProfilerCallback5VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback5VTable(IVTable<ICorProfilerCallback5, ICorProfilerCallback5.Vtbl> c);
+            return (nint)CreateICorProfilerCallback5VTable();
         }
 
         private static nint GetICorProfilerCallback6VTable()
         {
-            return (nint)get_ICorProfilerCallback6VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback6VTable(IVTable<ICorProfilerCallback6, ICorProfilerCallback6.Vtbl> c);
+            return (nint)CreateICorProfilerCallback6VTable();
         }
 
         private static nint GetICorProfilerCallback7VTable()
         {
-            return (nint)get_ICorProfilerCallback7VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback7VTable(IVTable<ICorProfilerCallback7, ICorProfilerCallback7.Vtbl> c);
+            return (nint)CreateICorProfilerCallback7VTable();
         }
 
         private static nint GetICorProfilerCallback8VTable()
         {
-            return (nint)get_ICorProfilerCallback8VTable(null);
-
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback8VTable(IVTable<ICorProfilerCallback8, ICorProfilerCallback8.Vtbl> c);
+            return (nint)CreateICorProfilerCallback8VTable();
         }
 
         private static nint GetICorProfilerCallback9VTable()
         {
-            return (nint)get_ICorProfilerCallback9VTable(null);
+            return (nint)CreateICorProfilerCallback9VTable();
+        }
 
-            [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateVTable")]
-            static extern IUnknown.Vtbl* get_ICorProfilerCallback9VTable(IVTable<ICorProfilerCallback9, ICorProfilerCallback9.Vtbl> c);
+        // Перемещаем вспомогательные методы на уровень класса и объявляем их как private static
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback.Vtbl* CreateICorProfilerCallbackVTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback2.Vtbl* CreateICorProfilerCallback2VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback2
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback2.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback3.Vtbl* CreateICorProfilerCallback3VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback3
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback3.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback4.Vtbl* CreateICorProfilerCallback4VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback4
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback4.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback5.Vtbl* CreateICorProfilerCallback5VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback5
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback5.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback6.Vtbl* CreateICorProfilerCallback6VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback6
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback6.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback7.Vtbl* CreateICorProfilerCallback7VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback7
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback7.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback8.Vtbl* CreateICorProfilerCallback8VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback8
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback8.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ICorProfilerCallback9.Vtbl* CreateICorProfilerCallback9VTable()
+        {
+            // Реализуйте логику создания VTable для ICorProfilerCallback9
+            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback9.");
         }
 
         private readonly static FrozenDictionary<Type, Func<nint>> ICorProfilerCallbackVTableFactoryMap = new Dictionary<Type, Func<nint>>
@@ -155,7 +191,7 @@ namespace ClrProfiling.ComInterop.Wrappers
             typeof(ICorProfilerCallback8.Interface),
             typeof(ICorProfilerCallback9.Interface),
         }.ToFrozenSet();
-        
+
         protected override unsafe ComInterfaceEntry* ComputeVtables(object obj, CreateComInterfaceFlags flags, out int count)
         {
             Console.WriteLine($"CALL ComputeVtables {obj.GetType()}");
@@ -170,7 +206,7 @@ namespace ClrProfiling.ComInterop.Wrappers
 
             Console.WriteLine($"Found {profilerCallbackIfaces.Length} ICorProfilerCallbackX interfaces.");
 
-            foreach(var i in profilerCallbackIfaces)
+            foreach (var i in profilerCallbackIfaces)
             {
                 Console.WriteLine($"IFACE {i.FullName}");
             }
@@ -202,14 +238,16 @@ namespace ClrProfiling.ComInterop.Wrappers
 
                 try
                 {
-                    implDef[idx++].Vtable = ICorProfilerCallbackVTableFactoryMap[iface]();
+                    implDef[idx].Vtable = ICorProfilerCallbackVTableFactoryMap[iface]();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to pupulate the Vtable: {ex}");
+                    Console.WriteLine($"Failed to populate the Vtable: {ex}");
+                    throw;
                 }
 
-                Console.WriteLine($"INIT impl VTABLE{iface.FullName} -> 0x{implDef[idx].Vtable}:x8");
+                Console.WriteLine($"INIT impl VTABLE {iface.FullName} -> 0x{(ulong)implDef[idx].Vtable:x8}");
+                idx++;
             }
 
             count = implDefinitionLen;

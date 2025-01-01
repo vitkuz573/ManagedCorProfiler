@@ -8,5 +8,5 @@ public interface IThreadInfo
 
     string ThreadName { get; }
 
-    IntPtr OSThreadHandle { get; }
+    nint OSThreadHandle { get; }
 }

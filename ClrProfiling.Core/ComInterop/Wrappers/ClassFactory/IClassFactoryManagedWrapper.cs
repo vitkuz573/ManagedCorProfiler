@@ -9,7 +9,7 @@ namespace ClrProfiling.ComInterop.Wrappers
     public static unsafe class IClassFactoryManagedWrapper
     {
         [UnmanagedCallersOnly]
-        public static unsafe int CreateInstance(IntPtr _this, IntPtr outer, Guid* guid, IntPtr* instance)
+        public static unsafe int CreateInstance(nint _this, nint outer, Guid* guid, nint* instance)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace ClrProfiling.ComInterop.Wrappers
         }
 
         [UnmanagedCallersOnly]
-        public static int LockServer(IntPtr _this, bool @lock)
+        public static int LockServer(nint _this, bool @lock)
         {
             try
             {

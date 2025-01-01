@@ -70,21 +70,9 @@ public unsafe ref struct NativeBuffer<T> where T : unmanaged
     public static implicit operator nint(NativeBuffer<T> b) => (nint)b.Pointer;
     public static implicit operator T*(NativeBuffer<T> b) => b.Pointer;
 
-    public T this[int index]
-    {
-        get
-        {
-            return _address[index];
-        }
-    }
+    public readonly T this[int index] => _address[index];
 
-    public T this[uint index]
-    {
-        get
-        {
-            return _address[index];
-        }
-    }
+    public readonly T this[uint index] => _address[index];
 
     private NativeBuffer(uint elementCount)
     {
@@ -97,12 +85,9 @@ public unsafe ref struct NativeBuffer<T> where T : unmanaged
         return new NativeBuffer<T>(elementCount);
     }
 
-    public void ZeroOut()
+    public readonly void ZeroOut()
     {
-        Unsafe.InitBlockUnaligned(
-            _address, 
-            0, 
-            (uint)(_length * sizeof(T)));
+        Unsafe.InitBlockUnaligned(_address, 0, (uint)(_length * sizeof(T)));
     }
 
     /// <summary>

@@ -45,7 +45,7 @@ public class Windows64ThreadManager : IThreadManager, IDisposable
     {
         var ntdll = PInvoke_Windows.GetModuleHandle("ntdll.dll");
 
-        if (ntdll == IntPtr.Zero)
+        if (ntdll == nint.Zero)
         {
             ntdll = PInvoke_Windows.LoadLibrary("ntdll.dll");
         }
@@ -59,7 +59,7 @@ public class Windows64ThreadManager : IThreadManager, IDisposable
 
         var hr = _profilerInfo->GetHandleFromThread(managedThreadId, &osThreadHandle);
 
-        if (hr != HResult.S_OK)
+        if (hr != HRESULT.S_OK)
         {
             _logger.LogWarning("FAIL GetHandleFromThread() with hr=0x{hr:x8}", hr);
             return hr;

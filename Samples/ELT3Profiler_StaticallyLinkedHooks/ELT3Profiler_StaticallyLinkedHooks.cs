@@ -85,10 +85,10 @@ internal unsafe class ELT3Profiler_StaticallyLinkedHooks : CorProfilerCallback2
     }
 
     [DllImport("kernel32.dll")]
-    public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+    public static extern nint GetProcAddress(nint hModule, string procedureName);
 
     [DllImport("kernel32.dll")]
-    public static extern IntPtr GetModuleHandle(string moduleName);
+    public static extern nint GetModuleHandle(string moduleName);
 
     public override HRESULT Initialize(IUnknown* unknown)
     {
