@@ -1,8 +1,6 @@
 ﻿using ClrProfiling.Core;
 using ClrProfiling.Core.Abstractions;
 using ClrProfiling.Helpers;
-using System.Net;
-using System.Runtime.CompilerServices;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Diagnostics.ClrProfiling;
@@ -25,6 +23,7 @@ internal unsafe class MyProfiler : CorProfilerCallback2
         if (hr.Failed)
         {
             Console.WriteLine($"FAIL QueryInterface hr={hr}");
+
             return HRESULT.E_FAIL;
         }
 

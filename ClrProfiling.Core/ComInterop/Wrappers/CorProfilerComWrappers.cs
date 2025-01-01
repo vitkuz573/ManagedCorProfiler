@@ -86,68 +86,85 @@ namespace ClrProfiling.ComInterop.Wrappers
             return (nint)CreateICorProfilerCallback9VTable();
         }
 
-        // Перемещаем вспомогательные методы на уровень класса и объявляем их как private static
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback.Vtbl* CreateICorProfilerCallbackVTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback.");
+            var vtbl = new ICorProfilerCallback.Vtbl();
+            ICorProfilerCallback.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback2.Vtbl* CreateICorProfilerCallback2VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback2
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback2.");
+            var vtbl = new ICorProfilerCallback2.Vtbl();
+            ICorProfilerCallback2.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback3.Vtbl* CreateICorProfilerCallback3VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback3
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback3.");
+            var vtbl = new ICorProfilerCallback3.Vtbl();
+            ICorProfilerCallback3.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback4.Vtbl* CreateICorProfilerCallback4VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback4
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback4.");
+            var vtbl = new ICorProfilerCallback4.Vtbl();
+            ICorProfilerCallback4.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback5.Vtbl* CreateICorProfilerCallback5VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback5
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback5.");
+            var vtbl = new ICorProfilerCallback5.Vtbl();
+            ICorProfilerCallback5.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback6.Vtbl* CreateICorProfilerCallback6VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback6
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback6.");
+            var vtbl = new ICorProfilerCallback6.Vtbl();
+            ICorProfilerCallback6.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback7.Vtbl* CreateICorProfilerCallback7VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback7
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback7.");
+            var vtbl = new ICorProfilerCallback7.Vtbl();
+            ICorProfilerCallback7.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback8.Vtbl* CreateICorProfilerCallback8VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback8
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback8.");
+            var vtbl = new ICorProfilerCallback8.Vtbl();
+            ICorProfilerCallback8.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ICorProfilerCallback9.Vtbl* CreateICorProfilerCallback9VTable()
         {
-            // Реализуйте логику создания VTable для ICorProfilerCallback9
-            throw new NotImplementedException("Реализуйте логику создания VTable для ICorProfilerCallback9.");
+            var vtbl = new ICorProfilerCallback9.Vtbl();
+            ICorProfilerCallback9.PopulateVTable(&vtbl);
+
+            return &vtbl;
         }
 
         private readonly static FrozenDictionary<Type, Func<nint>> ICorProfilerCallbackVTableFactoryMap = new Dictionary<Type, Func<nint>>
