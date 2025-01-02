@@ -4,15 +4,8 @@ using Windows.Win32.Foundation;
 
 namespace ClrProfiling.ComInterop.Wrappers;
 
-public class DefaultClassFactory : IClassFactory
+public class DefaultClassFactory(object profilerInstance) : IClassFactory
 {
-    private readonly object _profiler;
-
-    public DefaultClassFactory(object profilerInstance)
-    {
-        _profiler = profilerInstance;
-    }
-
     public unsafe int CreateInstance(nint outer, Guid* guid, nint* instance)
     {
         if (outer != nint.Zero)
@@ -26,9 +19,7 @@ public class DefaultClassFactory : IClassFactory
 
         var cw = new CorProfilerComWrappers();
 
-        nint ccwUnknown = cw.GetOrCreateComInterfaceForObject(
-                _profiler,
-                CreateComInterfaceFlags.None);
+        nint ccwUnknown = cw.GetOrCreateComInterfaceForObject(profilerInstance, CreateComInterfaceFlags.None);
 
         var hr = Marshal.QueryInterface(ccwUnknown, in guid_, out var ptr);
 

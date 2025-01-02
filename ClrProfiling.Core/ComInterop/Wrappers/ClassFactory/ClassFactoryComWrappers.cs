@@ -3,111 +3,111 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ClrProfiling.ComInterop.Wrappers
+namespace ClrProfiling.ComInterop.Wrappers;
+
+public sealed unsafe class ClassFactoryComWrappers : ComWrappers
 {
-    public sealed unsafe class ClassFactoryComWrappers : ComWrappers
+    /* function pointers to be called by the native side */
+    static readonly nint s_ClassFactoryCreateInstanceVtbl;
+    static readonly nint s_ClassFactoryLockServersVtbl;
+
+    /* vtable definition */
+    static readonly ComInterfaceEntry* s_ClassFactoryImplDefinition; // vtable pointer
+    static readonly int s_ClassFactoryImplDefinitionLen; // num func pointers in the vtable
+
+    readonly delegate*<nint, object?> _createIfSupported;
+
+    public ClassFactoryComWrappers(bool useDynamicNativeWrapper = false)
     {
-        /* function pointers to be called by the native side */
-        static readonly nint s_ClassFactoryCreateInstanceVtbl;
-        static readonly nint s_ClassFactoryLockServersVtbl;
+        // Determine which wrapper create function to use.
+        /*_createIfSupported = useDynamicNativeWrapper
+            ? &ABI.DemoNativeDynamicWrapper.CreateIfSupported
+            : &ABI.DemoNativeStaticWrapper.CreateIfSupported;*/
 
-        /* vtable definition */
-        static readonly ComInterfaceEntry* s_ClassFactoryImplDefinition; // vtable pointer
-        static readonly int s_ClassFactoryImplDefinitionLen; // num func pointers in the vtable
+        _createIfSupported = &IClassFactoryStaticWrapper.CreateIfSupported;
+    }
 
-        readonly delegate*<nint, object?> _createIfSupported;
+    /// <summary>
+    /// Preallocate COM artifacts to avoid penalty during wrapper creation.
+    /// </summary>
+    static ClassFactoryComWrappers()
+    {
+        // Get system provided IUnknown implementation.
+        GetIUnknownImpl(
+            out nint fpQueryInterface,
+            out nint fpAddRef,
+            out nint fpRelease);
 
-        public ClassFactoryComWrappers(bool useDynamicNativeWrapper = false)
+        // Construct VTable(s) for supported interface(s)
         {
-            // Determine which wrapper create function to use.
-            /*_createIfSupported = useDynamicNativeWrapper
-                ? &ABI.DemoNativeDynamicWrapper.CreateIfSupported
-                : &ABI.DemoNativeStaticWrapper.CreateIfSupported;*/
+            int tableCount = 5;
 
-            _createIfSupported = &IClassFactoryStaticWrapper.CreateIfSupported;
+            int idx = 0;
+
+            var vtable = (nint*)RuntimeHelpers.AllocateTypeAssociatedMemory(
+                typeof(ClassFactoryComWrappers),
+                nint.Size * tableCount);
+
+            // IUnknown
+            vtable[idx++] = fpQueryInterface;
+            vtable[idx++] = fpAddRef;
+            vtable[idx++] = fpRelease;
+
+            // IClassFactory
+            vtable[idx++] = (nint)(delegate* unmanaged<nint, nint, Guid*, nint*, int>)&IClassFactoryManagedWrapper.CreateInstance;
+            vtable[idx++] = (nint)(delegate* unmanaged<nint, bool, int>)&IClassFactoryManagedWrapper.LockServer;
+
+            Debug.Assert(tableCount == idx);
+            s_ClassFactoryCreateInstanceVtbl = (nint)vtable;
         }
 
-        /// <summary>
-        /// Preallocate COM artifacts to avoid penalty during wrapper creation.
-        /// </summary>
-        static ClassFactoryComWrappers()
+        // Construct entries for supported managed types
         {
-            // Get system provided IUnknown implementation.
-            GetIUnknownImpl(
-                out nint fpQueryInterface,
-                out nint fpAddRef,
-                out nint fpRelease);
+            s_ClassFactoryImplDefinitionLen = 1;
+            int idx = 0;
+            var entries = (ComInterfaceEntry*)RuntimeHelpers.AllocateTypeAssociatedMemory(
+                typeof(ClassFactoryComWrappers),
+                sizeof(ComInterfaceEntry) * s_ClassFactoryImplDefinitionLen);
+            entries[idx].IID = IClassFactory.IID_IClassFactory;
+            entries[idx++].Vtable = s_ClassFactoryCreateInstanceVtbl;
+            Debug.Assert(s_ClassFactoryImplDefinitionLen == idx);
+            s_ClassFactoryImplDefinition = entries;
+        }
+    }
 
-            // Construct VTable(s) for supported interface(s)
-            {
-                int tableCount = 5;
+    protected override unsafe ComInterfaceEntry* ComputeVtables(object obj, CreateComInterfaceFlags flags, out int count)
+    {
+        Debug.Assert(flags is CreateComInterfaceFlags.None);
 
-                int idx = 0;
+        if (obj is DefaultClassFactory)
+        {
+            count = s_ClassFactoryImplDefinitionLen;
 
-                var vtable = (nint*)RuntimeHelpers.AllocateTypeAssociatedMemory(
-                    typeof(ClassFactoryComWrappers),
-                    nint.Size * tableCount);
-
-                // IUnknown
-                vtable[idx++] = fpQueryInterface;
-                vtable[idx++] = fpAddRef;
-                vtable[idx++] = fpRelease;
-
-                // IClassFactory
-                vtable[idx++] = (nint)(delegate* unmanaged<nint, nint, Guid*, nint*, int>)&IClassFactoryManagedWrapper.CreateInstance;
-                vtable[idx++] = (nint)(delegate* unmanaged<nint, bool, int>)&IClassFactoryManagedWrapper.LockServer;
-
-                Debug.Assert(tableCount == idx);
-                s_ClassFactoryCreateInstanceVtbl = (nint)vtable;
-            }
-
-            // Construct entries for supported managed types
-            {
-                s_ClassFactoryImplDefinitionLen = 1;
-                int idx = 0;
-                var entries = (ComInterfaceEntry*)RuntimeHelpers.AllocateTypeAssociatedMemory(
-                    typeof(ClassFactoryComWrappers),
-                    sizeof(ComInterfaceEntry) * s_ClassFactoryImplDefinitionLen);
-                entries[idx].IID = IClassFactory.IID_IClassFactory;
-                entries[idx++].Vtable = s_ClassFactoryCreateInstanceVtbl;
-                Debug.Assert(s_ClassFactoryImplDefinitionLen == idx);
-                s_ClassFactoryImplDefinition = entries;
-            }
+            return s_ClassFactoryImplDefinition;
         }
 
-        protected override unsafe ComInterfaceEntry* ComputeVtables(object obj, CreateComInterfaceFlags flags, out int count)
-        {
-            Debug.Assert(flags is CreateComInterfaceFlags.None);
+        // Note: this implementation does not handle cases where the passed in object implements
+        // one or both of the supported interfaces but is not the expected .NET class.
+        count = 0;
 
-            if (obj is DefaultClassFactory)
-            {
-                count = s_ClassFactoryImplDefinitionLen;
-                return s_ClassFactoryImplDefinition;
-            }
+        return null;
+    }
 
-            // Note: this implementation does not handle cases where the passed in object implements
-            // one or both of the supported interfaces but is not the expected .NET class.
-            count = 0;
+    protected override object? CreateObject(nint externalComObject, CreateObjectFlags flags)
+    {
+        // Assert use of the UniqueInstance flag since the returned Native Object Wrapper always
+        // supports IDisposable and its Dispose will always release and suppress finalization.
+        // If the wrapper doesn't always support IDisposable the assert can be relaxed.
+        Debug.Assert(flags.HasFlag(CreateObjectFlags.UniqueInstance));
 
-            return null;
-        }
+        // Throw an exception if the type is not supported by the implementation.
+        // Null can be returned as well, but an ArgumentNullException will be thrown for
+        // the consumer of this ComWrappers instance.
+        return _createIfSupported(externalComObject) ?? throw new NotSupportedException();
+    }
 
-        protected override object? CreateObject(nint externalComObject, CreateObjectFlags flags)
-        {
-            // Assert use of the UniqueInstance flag since the returned Native Object Wrapper always
-            // supports IDisposable and its Dispose will always release and suppress finalization.
-            // If the wrapper doesn't always support IDisposable the assert can be relaxed.
-            Debug.Assert(flags.HasFlag(CreateObjectFlags.UniqueInstance));
-
-            // Throw an exception if the type is not supported by the implementation.
-            // Null can be returned as well, but an ArgumentNullException will be thrown for
-            // the consumer of this ComWrappers instance.
-            return _createIfSupported(externalComObject) ?? throw new NotSupportedException();
-        }
-
-        protected override void ReleaseObjects(IEnumerable objects)
-        {
-            throw new NotImplementedException();
-        }
+    protected override void ReleaseObjects(IEnumerable objects)
+    {
+        throw new NotImplementedException();
     }
 }

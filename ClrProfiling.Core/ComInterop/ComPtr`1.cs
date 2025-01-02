@@ -5,10 +5,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Windows.Win32;
-using Windows.Win32.System.Com;
 using Windows.Win32.Foundation;
-using System.Runtime.InteropServices;
 
 namespace Windows.Win32.System.Com;
 
@@ -48,20 +45,18 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     /// <summary>Converts a raw pointer to a new <see cref="ComPtr{T}"/> instance and increments the ref count.</summary>
     /// <param name="other">The raw pointer to wrap.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ComPtr<T>(T* other)
-        => new ComPtr<T>(other);
+    public static implicit operator ComPtr<T>(T* other) => new(other);
 
     /// <summary>Unwraps a <see cref="ComPtr{T}"/> instance and returns the internal raw pointer.</summary>
     /// <param name="other">The <see cref="ComPtr{T}"/> instance to unwrap.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator T*(ComPtr<T> other)
-        => other.Get();
+    public static implicit operator T*(ComPtr<T> other) => other.Get();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator IUnknown**(ComPtr<T> other) => &other._ptr;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private readonly Guid* __uuidof<U>() where U: unmanaged, IComIID
+    private readonly Guid* __uuidof<U>() where U : unmanaged, IComIID
     {
         return (Guid*)Unsafe.AsPointer(ref Unsafe.AsRef(in U.Guid));
     }
@@ -71,8 +66,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     /// <param name="p">A raw pointer to the target <see cref="ComPtr{T}"/> value to write to.</param>
     /// <returns>The result of <see cref="IUnknown.QueryInterface"/> for the target type <typeparamref name="U"/>.</returns>
     /// <remarks>This method will automatically release the target COM object pointed to by <paramref name="p"/>, if any.</remarks>
-    public readonly HRESULT As<U>(ComPtr<U>* p)
-        where U : unmanaged, IComIID
+    public readonly HRESULT As<U>(ComPtr<U>* p) where U : unmanaged, IComIID
     {
         var iid = (Guid*)Unsafe.AsPointer(ref Unsafe.AsRef(in U.Guid));
 
@@ -84,13 +78,13 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     /// <param name="other">A reference to the target <see cref="ComPtr{T}"/> value to write to.</param>
     /// <returns>The result of <see cref="IUnknown.QueryInterface"/> for the target type <typeparamref name="U"/>.</returns>
     /// <remarks>This method will automatically release the target COM object pointed to by <paramref name="other"/>, if any.</remarks>
-    public readonly HRESULT As<U>(ref ComPtr<U> other)
-        where U : unmanaged, IComIID
+    public readonly HRESULT As<U>(ref ComPtr<U> other) where U : unmanaged, IComIID
     {
         U* ptr;
         HRESULT result = _ptr->QueryInterface(__uuidof<U>(), (void**)&ptr);
 
         other.Attach(ptr);
+
         return result;
     }
 
@@ -115,6 +109,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
         HRESULT result = _ptr->QueryInterface(riid, (void**)&ptr);
 
         other.Attach(ptr);
+
         return result;
     }
 
@@ -128,6 +123,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
             var @ref = _ptr->Release();
             Debug.Assert((@ref != 0) || (_ptr != other));
         }
+
         _ptr = (IUnknown*)other;
     }
 
@@ -138,6 +134,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     {
         T* ptr = (T*)_ptr;
         _ptr = null;
+
         return ptr;
     }
 
@@ -148,6 +145,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     {
         InternalAddRef();
         *ptr = (T*)_ptr;
+
         return HRESULT.S_OK;
     }
 
@@ -158,6 +156,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     {
         InternalAddRef();
         *p->ReleaseAndGetAddressOf() = (T*)_ptr;
+
         return HRESULT.S_OK;
     }
 
@@ -168,14 +167,14 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     {
         InternalAddRef();
         other.Attach((T*)_ptr);
+
         return HRESULT.S_OK;
     }
 
     /// <summary>Converts the current COM object reference to a given interface type and assigns that to a target raw pointer.</summary>
     /// <param name="ptr">The target raw pointer to copy the address of the current COM object to.</param>
     /// <returns>The result of <see cref="IUnknown.QueryInterface"/> for the target type <typeparamref name="U"/>.</returns>
-    public readonly HRESULT CopyTo<U>(U** ptr)
-        where U : unmanaged, IComIID
+    public readonly HRESULT CopyTo<U>(U** ptr) where U : unmanaged, IComIID
     {
         return _ptr->QueryInterface(__uuidof<U>(), (void**)ptr);
     }
@@ -183,8 +182,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     /// <summary>Converts the current COM object reference to a given interface type and assigns that to a target <see cref="ComPtr{T}"/>.</summary>
     /// <param name="p">The target raw pointer to copy the address of the current COM object to.</param>
     /// <returns>The result of <see cref="IUnknown.QueryInterface"/> for the target type <typeparamref name="U"/>.</returns>
-    public readonly HRESULT CopyTo<U>(ComPtr<U>* p)
-        where U : unmanaged, IComIID
+    public readonly HRESULT CopyTo<U>(ComPtr<U>* p) where U : unmanaged, IComIID
     {
         return _ptr->QueryInterface(__uuidof<U>(), (void**)p->ReleaseAndGetAddressOf());
     }
@@ -192,13 +190,13 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     /// <summary>Converts the current COM object reference to a given interface type and assigns that to a target <see cref="ComPtr{T}"/>.</summary>
     /// <param name="other">The target reference to copy the address of the current COM object to.</param>
     /// <returns>The result of <see cref="IUnknown.QueryInterface"/> for the target type <typeparamref name="U"/>.</returns>
-    public readonly HRESULT CopyTo<U>(ref ComPtr<U> other)
-        where U : unmanaged, IComIID
+    public readonly HRESULT CopyTo<U>(ref ComPtr<U> other) where U : unmanaged, IComIID
     {
         U* ptr;
         HRESULT result = _ptr->QueryInterface(__uuidof<U>(), (void**)&ptr);
 
         other.Attach(ptr);
+
         return result;
     }
 
@@ -230,6 +228,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
         HRESULT result = _ptr->QueryInterface(riid, (void**)&ptr);
 
         other.Attach(ptr);
+
         return result;
     }
 
@@ -270,6 +269,7 @@ public unsafe struct ComPtr<T>: IDisposable where T : unmanaged, IComIID
     public T** ReleaseAndGetAddressOf()
     {
         _ = InternalRelease();
+
         return GetAddressOf();
     }
 

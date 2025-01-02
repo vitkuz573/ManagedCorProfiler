@@ -37,6 +37,7 @@ internal unsafe class MyProfiler : CorProfilerCallback2
         if (hr.Failed)
         {
             Console.WriteLine($"FAIL SetEventMask hr={hr}");
+
             return HRESULT.E_FAIL;
         }
 
@@ -72,6 +73,7 @@ internal unsafe class MyProfiler : CorProfilerCallback2
         if (hr.Failed)
         {
             Console.WriteLine($"FAIL GetModuleInfo hr={hr}");
+
             return hr;
         }
 
@@ -85,6 +87,7 @@ internal unsafe class MyProfiler : CorProfilerCallback2
     public override HRESULT Shutdown()
     {
         _corProfilerInfo->Release();
+
         return HRESULT.S_OK;
     }
 }

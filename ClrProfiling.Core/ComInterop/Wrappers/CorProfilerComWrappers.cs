@@ -260,6 +260,7 @@ namespace ClrProfiling.ComInterop.Wrappers
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Failed to populate the Vtable: {ex}");
+
                     throw;
                 }
 
@@ -287,6 +288,7 @@ namespace ClrProfiling.ComInterop.Wrappers
         protected override void ReleaseObjects(IEnumerable objects)
         {
             Console.WriteLine($"THROW ReleaseObjects");
+
             throw new NotImplementedException();
         }
     }

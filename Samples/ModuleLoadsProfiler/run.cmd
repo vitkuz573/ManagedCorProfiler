@@ -7,6 +7,6 @@ set CORECLR_ENABLE_PROFILING=1
 set COMPlus_LogEnable=0
 set COMPlus_LogLevel=3
 set COMPlus_LogToConsole=1
-set CORE_LIBRARIES=C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.0
+set CORE_LIBRARIES=C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.0
 
 dotnet "..\SampleApp\bin\Debug\net9.0\SampleApp.dll"

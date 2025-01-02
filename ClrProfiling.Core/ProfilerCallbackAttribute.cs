@@ -1,11 +1,7 @@
 ﻿namespace ClrProfiling.Core;
 
-public class ProfilerCallbackAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class)]
+public class ProfilerCallbackAttribute(string guid) : Attribute
 {
-    public Guid IID { get; private set; }
-
-    public ProfilerCallbackAttribute(string guid)
-    {
-        IID = new Guid(guid);
-    }
+    public Guid IID { get; private set; } = new Guid(guid);
 }
