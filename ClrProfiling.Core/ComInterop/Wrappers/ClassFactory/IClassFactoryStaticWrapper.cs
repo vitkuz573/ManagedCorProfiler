@@ -1,66 +1,70 @@
-﻿using Microsoft.Diagnostics.Runtime.Utilities;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Windows.Win32.Foundation;
+using Windows.Win32.System.Com;
 
-namespace ClrProfiling.ComInterop.Wrappers
+namespace ClrProfiling.ComInterop.Wrappers;
+
+internal class IClassFactoryStaticWrapper : IClassFactory.Interface
 {
-    internal class IClassFactoryStaticWrapper : IClassFactory
+    private bool _isDisposed = false;
+
+    public nint IClassFactoryInst { get; init; }
+
+    private IClassFactoryStaticWrapper() { }
+
+    public static IClassFactoryStaticWrapper? CreateIfSupported(nint ptr)
     {
-        private bool _isDisposed = false;
+        int hr = Marshal.QueryInterface(ptr, in IClassFactory.IID_Guid, out nint instance);
 
-        public nint IClassFactoryInst { get; init; }
-
-        private IClassFactoryStaticWrapper() { }
-
-        public static IClassFactoryStaticWrapper? CreateIfSupported(nint ptr)
+        if (hr != HRESULT.S_OK)
         {
-            int hr = Marshal.QueryInterface(ptr, in IClassFactory.IID_IClassFactory, out nint instance);
-
-            if (hr != HRESULT.S_OK)
-            {
-                return default;
-            }
-
-            Console.WriteLine("CreateIfSupported");
-
-            return new IClassFactoryStaticWrapper()
-            {
-                IClassFactoryInst = instance,
-            };
+            return default;
         }
 
-        ~IClassFactoryStaticWrapper()
+        Console.WriteLine("CreateIfSupported");
+
+        return new IClassFactoryStaticWrapper()
         {
-            DisposeInternal();
+            IClassFactoryInst = instance,
+        };
+    }
+
+    ~IClassFactoryStaticWrapper()
+    {
+        DisposeInternal();
+    }
+
+    public void Dispose()
+    {
+        DisposeInternal();
+
+        GC.SuppressFinalize(this);
+    }
+
+    void DisposeInternal()
+    {
+        if (_isDisposed)
+        {
+            return;
         }
 
-        public void Dispose()
-        {
-            DisposeInternal();
-            GC.SuppressFinalize(this);
-        }
+        // [WARNING] This is unsafe for COM objects that have specific thread affinity.
+        Marshal.Release(IClassFactoryInst);
 
-        void DisposeInternal()
-        {
-            if (_isDisposed)
-                return;
+        _isDisposed = true;
+    }
 
-            // [WARNING] This is unsafe for COM objects that have specific thread affinity.
-            Marshal.Release(IClassFactoryInst);
+    public unsafe HRESULT CreateInstance([Optional] IUnknown* pUnkOuter, Guid* riid, void** ppvObject)
+    {
+        Console.WriteLine("CreateInstance");
 
-            _isDisposed = true;
-        }
+        return IClassFactoryNativeWrapper.CreateInstance(pUnkOuter, riid, ppvObject);
+    }
 
-        public unsafe int CreateInstance(nint outer, Guid* guid, nint* instance)
-        {
-            Console.WriteLine("CreateInstance");
-            return IClassFactoryNativeWrapper.CreateInstance(outer, guid, instance);
-        }
+    public HRESULT LockServer(BOOL fLock)
+    {
+        Console.WriteLine("LockServer");
 
-        public int LockServers(bool @lock)
-        {
-            Console.WriteLine("LockServers");
-            return IClassFactoryNativeWrapper.LockServers(@lock);
-        }
+        return IClassFactoryNativeWrapper.LockServer(fLock);
     }
 }

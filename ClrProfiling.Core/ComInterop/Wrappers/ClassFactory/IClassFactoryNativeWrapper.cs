@@ -1,22 +1,22 @@
-﻿using Microsoft.Diagnostics.Runtime.Utilities;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Windows.Win32.System.Com;
+using Windows.Win32.Foundation;
 
-namespace ClrProfiling.ComInterop.Wrappers
+namespace ClrProfiling.ComInterop.Wrappers;
+
+/// <summary>
+/// managed --> native
+/// </summary>
+[DynamicInterfaceCastableImplementation]
+internal unsafe interface IClassFactoryNativeWrapper : IClassFactory.Interface
 {
-    /// <summary>
-    /// managed --> native
-    /// </summary>
-    [DynamicInterfaceCastableImplementation]
-    internal unsafe interface IClassFactoryNativeWrapper : IClassFactory
+    public static new unsafe HRESULT CreateInstance(IUnknown* pUnkOuter, Guid* riid, void** ppvObject)
     {
-        public static new unsafe int CreateInstance(nint outer, Guid* guid, nint* instance)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
+    }
 
-        public static new int LockServers(bool @lock)
-        {
-            throw new NotImplementedException();
-        }
+    public static new HRESULT LockServer(BOOL fLock)
+    {
+        throw new NotImplementedException();
     }
 }

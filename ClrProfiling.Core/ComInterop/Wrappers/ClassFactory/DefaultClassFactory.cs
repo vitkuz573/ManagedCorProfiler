@@ -1,39 +1,44 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Windows.Win32.Foundation;
+using Windows.Win32.System.Com;
 
 namespace ClrProfiling.ComInterop.Wrappers;
 
-public class DefaultClassFactory(object profilerInstance) : IClassFactory
+public class DefaultClassFactory(object profilerInstance) : IClassFactory.Interface
 {
-    public unsafe int CreateInstance(nint outer, Guid* guid, nint* instance)
+    public unsafe HRESULT CreateInstance([Optional] IUnknown* pUnkOuter, Guid* riid, void** ppvObject)
     {
-        if (outer != nint.Zero)
+        if (pUnkOuter != null)
         {
-            *instance = 0;
+            *ppvObject = null;
 
-            return -2147221232; // E_NO_AGGREGATE
+            return new HRESULT(-2147221232);
         }
 
-        var guid_ = *guid;
+        if (riid == null || ppvObject == null)
+        {
+            return HRESULT.E_POINTER;
+        }
+
+        var guid = *riid;
 
         var cw = new CorProfilerComWrappers();
 
         nint ccwUnknown = cw.GetOrCreateComInterfaceForObject(profilerInstance, CreateComInterfaceFlags.None);
 
-        var hr = Marshal.QueryInterface(ccwUnknown, in guid_, out var ptr);
+        var hr = Marshal.QueryInterface(ccwUnknown, in guid, out var ptr);
 
-        Debug.Assert(hr == 0);
+        if (hr != HRESULT.S_OK)
+        {
+            return new HRESULT(hr);
+        }
 
-        *instance = ptr;
+        *ppvObject = (void*)ptr;
 
         return HRESULT.S_OK;
-
-        // var queryInterface = (delegate* unmanaged<nint, Guid*, void**, int>)&ICorProfilerCallback_.QueryInterface;
-        //return queryInterface(nint.Zero, guid, (void**)instance);
     }
 
-    public int LockServers(bool @lock)
+    public HRESULT LockServer(BOOL fLock)
     {
         return HRESULT.S_OK;
     }

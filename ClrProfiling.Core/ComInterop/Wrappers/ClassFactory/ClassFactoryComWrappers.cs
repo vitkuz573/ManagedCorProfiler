@@ -55,7 +55,7 @@ public sealed unsafe class ClassFactoryComWrappers : ComWrappers
             vtable[idx++] = fpRelease;
 
             // IClassFactory
-            vtable[idx++] = (nint)(delegate* unmanaged<nint, nint, Guid*, nint*, int>)&IClassFactoryManagedWrapper.CreateInstance;
+            vtable[idx++] = (nint)(delegate* unmanaged<nint, IUnknown*, Guid*, void**, int>)&IClassFactoryManagedWrapper.CreateInstance;
             vtable[idx++] = (nint)(delegate* unmanaged<nint, bool, int>)&IClassFactoryManagedWrapper.LockServer;
 
             Debug.Assert(tableCount == idx);
