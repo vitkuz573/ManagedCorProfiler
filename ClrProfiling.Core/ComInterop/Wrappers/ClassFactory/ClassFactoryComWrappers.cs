@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Windows.Win32.System.Com;
 
 namespace ClrProfiling.ComInterop.Wrappers;
 
@@ -68,7 +69,7 @@ public sealed unsafe class ClassFactoryComWrappers : ComWrappers
             var entries = (ComInterfaceEntry*)RuntimeHelpers.AllocateTypeAssociatedMemory(
                 typeof(ClassFactoryComWrappers),
                 sizeof(ComInterfaceEntry) * s_ClassFactoryImplDefinitionLen);
-            entries[idx].IID = IClassFactory.IID_IClassFactory;
+            entries[idx].IID = IClassFactory.IID_Guid;
             entries[idx++].Vtable = s_ClassFactoryCreateInstanceVtbl;
             Debug.Assert(s_ClassFactoryImplDefinitionLen == idx);
             s_ClassFactoryImplDefinition = entries;
